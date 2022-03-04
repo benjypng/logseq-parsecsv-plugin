@@ -66,7 +66,7 @@ const ParseCSV = () => {
   };
 
   return (
-    <div className="flex justify-center" tabIndex={-1}>
+    <div className="flex justify-center border" tabIndex={-1}>
       <div className="absolute top-10 bg-white rounded-lg p-3 w-1/3 border">
         <input
           className="mb-3 block w-full cursor-pointer bg-gray-50 border border-gray-300 text-gray-900 focus:outline-none focus:border-transparent text-sm rounded-lg"
