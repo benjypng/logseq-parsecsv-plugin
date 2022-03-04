@@ -4,6 +4,8 @@
 
 This simple plugin lets you import a CSV file and converts it to an inline table in Logseq!
 
+![](/screenshots/demo.gif)
+
 # Usage
 
 Go to the block you want to insert the table in, and type `/Parse CSV`. You will be prompted to upload the `csv` file. Just do so and click `Parse`. It's done completely local so no information leaves your computer.
