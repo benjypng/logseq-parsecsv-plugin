@@ -67,7 +67,7 @@ const ParseCSV = () => {
 
   return (
     <div className="flex justify-center" tabIndex={-1}>
-      <div className="absolute top-10 bg-white rounded-lg p-3 w-40 border">
+      <div className="absolute top-10 bg-white rounded-lg p-3 w-1/3 border">
         <input
           className="mb-3 block w-full cursor-pointer bg-gray-50 border border-gray-300 text-gray-900 focus:outline-none focus:border-transparent text-sm rounded-lg"
           type="file"
@@ -75,7 +75,7 @@ const ParseCSV = () => {
         />
         <button
           type="button"
-          className="mb-3 py-2 px-4  bg-teal-600 hover:bg-blue-700 focus:ring-pink-500 focus:ring-offset-pink-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-full"
+          className="mb-5 py-2 px-4  bg-teal-600 hover:bg-blue-700 focus:ring-pink-500 focus:ring-offset-pink-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-full"
           onClick={parse}
         >
           Parse CSV
