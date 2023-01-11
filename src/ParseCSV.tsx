@@ -27,7 +27,6 @@ const ParseCSV = () => {
       Papa.parse(selectedFile!, {
         complete: async (results) => {
           const response: any[] = results.data;
-          console.log(response);
 
           if (e.target.name === "rendered") {
             await logseq.Editor.insertAtEditingCursor(
@@ -83,7 +82,6 @@ ${tmpVar}`;
             let pBlk: any;
             for (let i = 1; i < response.length; i++) {
               for (let j = 0; j < response[i].length; j++) {
-                console.log(response[i][j]);
                 if (j === 0) {
                   pBlk = await logseq.Editor.insertBlock(
                     blk!.uuid,
@@ -91,10 +89,14 @@ ${tmpVar}`;
                     { before: true, sibling: true }
                   );
                 } else {
-                  await logseq.Editor.insertBlock(pBlk.uuid, response[i][j], {
-                    before: false,
-                    sibling: false,
-                  });
+                  if (logseq.settings!.omitBlanks && response[i][j] !== "") {
+                    continue;
+                  } else {
+                    await logseq.Editor.insertBlock(pBlk.uuid, response[i][j], {
+                      before: false,
+                      sibling: false,
+                    });
+                  }
                 }
               }
             }
