@@ -3,7 +3,6 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { handleClosePopup } from "./handleClosePopup";
 import ParseCSV from "./ParseCSV";
-import "./App.css";
 import { SettingSchemaDesc } from "@logseq/libs/dist/LSPlugin.user";
 
 const settings: SettingSchemaDesc[] = [
