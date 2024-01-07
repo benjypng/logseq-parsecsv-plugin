@@ -34,8 +34,10 @@ const main = async () => {
       </React.StrictMode>,
       document.getElementById("app"),
     );
+
     logseq.showMainUI();
   });
+
   handleClosePopup();
 };
 
