@@ -1,18 +1,18 @@
 export const handleClosePopup = () => {
   //ESC
   document.addEventListener(
-    'keydown',
+    "keydown",
     function (e) {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         logseq.hideMainUI({ restoreEditingCursor: true });
       }
       e.stopPropagation();
     },
-    false
+    false,
   );
 
-  document.addEventListener('click', (e) => {
-    if (!(e.target as HTMLElement).closest('body')) {
+  document.addEventListener("click", (e) => {
+    if (!(e.target as HTMLElement).closest("body")) {
       logseq.hideMainUI({ restoreEditingCursor: true });
     }
   });

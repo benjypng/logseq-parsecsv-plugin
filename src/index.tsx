@@ -24,7 +24,7 @@ const settings: SettingSchemaDesc[] = [
   },
 ];
 
-const main = () => {
+const main = async () => {
   console.log("logseq-parsecsv-plugin loaded");
 
   logseq.Editor.registerSlashCommand("Parse CSV", async () => {
@@ -32,7 +32,7 @@ const main = () => {
       <React.StrictMode>
         <ParseCSV />
       </React.StrictMode>,
-      document.getElementById("app")
+      document.getElementById("app"),
     );
 
     logseq.showMainUI();

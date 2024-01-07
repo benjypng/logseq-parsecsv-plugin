@@ -1,7 +1,7 @@
-import { BlockEntity } from "@logseq/libs/dist/LSPlugin.user";
 import Papa from "papaparse";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import ProgressBar from "./ProgressBar";
+import { BlockEntity } from "@logseq/libs/dist/LSPlugin";
 
 const uniqueIdentifier = () =>
   Math.random()
@@ -9,28 +9,30 @@ const uniqueIdentifier = () =>
     .replace(/[^a-z]+/g, "");
 
 const ParseCSV = () => {
-  const [selectedFile, setSelectedFile] = useState();
+  const [selectedFile, setSelectedFile] = useState<File | undefined>();
   const [isFilePicked, setIsFilePicked] = useState(false);
-  const [progressPercentage, setProgressPercentage] = useState(0);
+  const [progressPercentage, setProgressPercentage] = useState<number>(0);
   const [keyValue, setKeyValue] = useState(Date.now());
 
-  const handleFile = (e: any) => {
+  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
     setSelectedFile(e.target.files[0]);
     setIsFilePicked(true);
   };
 
-  const parse = async (e) => {
+  const parse = async (e: any) => {
     if (!isFilePicked) {
       logseq.UI.showMsg("Please select a file first.", "error");
       return;
     } else {
       Papa.parse(selectedFile!, {
         complete: async (results) => {
-          const response: any[] = results.data;
+          const response = results.data as string[][];
+          if (!response || response.length == 0) return;
 
           if (e.target.name === "rendered") {
             await logseq.Editor.insertAtEditingCursor(
-              `{{renderer :tables_${uniqueIdentifier()}}}`
+              `{{renderer :tables_${uniqueIdentifier()}}}`,
             );
 
             const tableBlock = await logseq.Editor.getCurrentBlock();
@@ -38,40 +40,42 @@ const ParseCSV = () => {
             const tableOptions = await logseq.Editor.insertBlock(
               tableBlock!.uuid,
               "data nosum nostyle",
-              { before: false, sibling: false }
+              { before: false, sibling: false },
             );
+            if (!tableOptions) return;
 
-            for (let r of response[0]) {
+            for (const r of response[0]!) {
               await logseq.Editor.insertBlock(tableOptions.uuid, r, {
                 before: false,
                 sibling: false,
               });
             }
 
-            const tableOptionsBlock: BlockEntity = await logseq.Editor.getBlock(
+            const tableOptionsBlock = await logseq.Editor.getBlock(
               tableOptions.uuid,
               {
                 includeChildren: true,
-              }
+              },
             );
+            if (!tableOptionsBlock) return;
 
-            const interval: number = 100 / tableOptionsBlock.children.length;
-            for (let i = 0; i < tableOptionsBlock.children.length; i++) {
+            const interval = 100 / tableOptionsBlock.children!.length;
+            for (let i = 0; i < tableOptionsBlock.children!.length; i++) {
               setProgressPercentage(
-                (progressPercentage) => progressPercentage + interval
+                (progressPercentage) => progressPercentage + interval,
               );
               for (let j = 1; j < response.length; j++) {
                 await logseq.Editor.insertBlock(
-                  tableOptionsBlock.children[i]["uuid"],
-                  response[j][i],
-                  { before: false, sibling: false }
+                  (tableOptionsBlock.children![i] as BlockEntity).uuid,
+                  response[j]![i] as string,
+                  { before: false, sibling: false },
                 );
               }
             }
           } else if (e.target.name === "markdown") {
             let markdownTable = "";
             for (const r of response) {
-              let tmpVar = `|${r.join("|")}|`;
+              const tmpVar = `|${r.join("|")}|`;
               markdownTable = `${markdownTable}
 ${tmpVar}`;
             }
@@ -79,23 +83,27 @@ ${tmpVar}`;
           } else if (e.target.name === "inline") {
             const blk = await logseq.Editor.getCurrentBlock();
 
-            let pBlk: any;
+            let pBlk;
             for (let i = 1; i < response.length; i++) {
-              for (let j = 0; j < response[i].length; j++) {
+              for (let j = 0; j < response[i]!.length; j++) {
                 if (j === 0) {
                   pBlk = await logseq.Editor.insertBlock(
                     blk!.uuid,
-                    response[i][j],
-                    { before: true, sibling: true }
+                    response[i]![j] as string,
+                    { before: true, sibling: true },
                   );
                 } else {
-                  if (logseq.settings!.omitBlanks && response[i][j] !== "") {
+                  if (logseq.settings!.omitBlanks && response[i]![j] !== "") {
                     continue;
                   } else {
-                    await logseq.Editor.insertBlock(pBlk.uuid, response[i][j], {
-                      before: false,
-                      sibling: false,
-                    });
+                    await logseq.Editor.insertBlock(
+                      pBlk!.uuid,
+                      response[i]![j] as string,
+                      {
+                        before: false,
+                        sibling: false,
+                      },
+                    );
                   }
                 }
               }
